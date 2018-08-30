@@ -1,0 +1,115 @@
+<html>
+<title>University System</title>
+<style>
+    .aParent div {
+        float: left;
+        clear: none;
+    }
+
+    #customers {
+        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 80%;
+    }
+
+    #customers td,
+    #customers th {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    #customers tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    #customers tr:hover {
+        background-color: #ddd;
+    }
+
+    #customers th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    #editid {
+        text-decoration: none;
+    }
+</style>
+
+<%
+ dim adoCon
+ dim resStuInfo
+ dim sqlString
+
+ set adoCon = Server.CreateObject("ADODB.Connection")
+ adoCon.Open "Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" & Server.MapPath("recordSystem.mdb")
+set resStuInfo = Server.CreateObject("ADODB.Recordset")
+sqlString = "SELECT stdinfo.ID, stdinfo.FirstName, stdinfo.LastName, stdinfo.Sex, stdinfo.Age, stdinfo.Email FROM stdinfo"
+resStuInfo.Open sqlString, adoCon
+%>
+    <div align="center">
+        <h1 style="color: blueviolet">Welcome Mr. <%Response.Write(Session("username"))%></h1>    
+        <h2 style="color: green">Admin Panel</h2>
+        <h3>LIST OF STUDENT</h3>
+    </div>
+
+    <div align="center">
+            <table id="customers">
+                    <tr>
+                        <th>FirstName</th>
+                        <th>LastName</th>
+                        <th>Gender</th>
+                        <th>Age(Yr)</th>
+                        <th>Email</th>
+                        <th>Action</th>
+                    </tr>
+            
+                <%
+                'Loop through the recordset
+                    Do While not resStuInfo.EOF
+                %>
+                        <tr>
+                            <td>
+                                <% Response.Write (resStuInfo("FirstName")) %>
+                            </td>
+                            <td>
+                                <% Response.Write (resStuInfo("LastName")) %>
+                            </td>
+                            <td>
+                                <% Response.Write (resStuInfo("Sex")) %>
+                            </td>
+                            <td>
+                                <% Response.Write (resStuInfo("Age")) %>
+                            </td>
+                            <td>
+                                <% Response.Write (resStuInfo("Email")) %>
+                            </td>
+                            <td>
+                                <div class="aParent">
+                                    <div>
+                                        <form action="deleteaction.asp" method="POST">
+                                            <input type="hidden" name="id" value="<%=resStuInfo("ID")%>">
+                                            <input type="submit" value=" Delete" style="color: red">
+                                        </form>
+                                    </div>
+                                </div>
+            
+                            </td>
+                        </tr>
+                <%
+                resStuInfo.MoveNext 
+                Loop
+                %>
+                </table>
+    </div>
+<%
+resStuInfo.Close
+Set resStuInfo = Nothing
+Set adoCon = Nothing
+%>
+</html>
+'Faisal Porag 
+'Happy Coding 
