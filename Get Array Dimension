@@ -1,0 +1,18 @@
+<%
+Function GetArrayDim(ByVal arr)
+  GetArrayDim = Null
+  Dim i
+  If IsArray(arr) Then
+    For i = 1 To 60 
+      On Error Resume Next 'This line is for try catch block
+      UBound arr, i
+      If Err.Number <> 0 Then
+        GetArrayDim = i-1
+        Exit Function
+      End If
+    Next
+    GetArrayDim = i
+  End If
+End Function
+
+%>
