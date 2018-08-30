@@ -1,0 +1,71 @@
+<%
+Dim iStart, iOffset
+iStart = Request("Start")
+iOffset = Request("Offset")
+
+if Not IsNumeric(iStart) or Len(iStart) = 0 then
+  iStart = 0
+else
+  iStart = CInt(iStart)
+end if
+
+if Not IsNumeric(iOffset) or Len(iOffset) = 0 then
+  iOffset = 5
+else
+  iOffset = Cint(iOffset)
+end if
+
+response.Write "Viewing " & iOffset & " records starting at record " & iStart & "<br>"
+Dim objConn, objRS, sqlString
+set objConn = Server.CreateObject("ADODB.Connection")
+objConn.Open "Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" & Server.MapPath("recordSystem.mdb")
+set objRS = Server.CreateObject("ADODB.Recordset")
+
+sqlString = "SELECT stdinfo.ID, stdinfo.FirstName, stdinfo.LastName, stdinfo.Sex, stdinfo.Age, stdinfo.Email FROM stdinfo"
+objRS.Open sqlString, objConn
+
+Dim aResults
+aResults = objRS.GetRows
+
+objRS.Close
+Set objRS = Nothing
+
+objConn.Close
+Set objConn = Nothing
+
+
+Dim iRows, iCols, iRowLoop, iColLoop, iStop
+iRows = UBound(aResults, 2)
+iCols = UBound(aResults, 1)
+
+if iRows > (iOffset + iStart) then
+  iStop = iOffset + iStart - 1
+else
+  iStop = iRows
+end if
+
+response.write("<table border='1'>")
+for iRowLoop = iStart to iStop
+  response.write("<tr>")
+  for iColLoop = 0 to iCols
+    response.write("<td>")
+      Response.Write(aResults(iColLoop, iRowLoop))
+    response.write("</td>")
+  next
+  response.write("</tr>")
+next  
+response.write("</table>")
+
+Response.Write "<p>"
+if iStart > 0 then
+  Response.Write "<a href=""demo.asp?Start=" & iStart-iOffset & "&Offset=" & iOffset & """>Previous " & iOffset & "</a>"
+end if
+
+if iStop < iRows then
+  Response.Write " <a href=""demo.asp?Start=" & iStart+iOffset & "&Offset=" & iOffset & """>Next " & iOffset & "</a>"
+end if
+Response.Write "</p>"
+%>
+
+'Happy Coding 
+'Faisal Porag
