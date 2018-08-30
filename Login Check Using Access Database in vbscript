@@ -1,0 +1,22 @@
+<%
+dim uname,pass
+uname = request.form("username")
+pass = request.form("password")
+
+set conn=Server.CreateObject("ADODB.Connection")
+conn.Provider="Microsoft.Jet.OLEDB.4.0"
+conn.Open "C:/inetpub/wwwroot/Project/recordSystem.mdb"
+set rs=Server.CreateObject("ADODB.recordset")
+query="SELECT * FROM logininfo WHERE UserName='" & uname & "'AND Password='" & pass & "'"
+rs.Open query,conn
+
+if not rs.EOF  then 
+   Session("username") = uname
+   Response.Redirect("home.asp") 
+else
+    Response.Redirect("index.asp")
+end if
+
+'Happy Coding
+'Faisal Porag
+%>
